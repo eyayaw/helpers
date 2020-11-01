@@ -7,7 +7,7 @@ rmd_boilerplate <- function(input,
   if (!grepl("[.][Rr]?md$", input)) {
     input <- paste0(input, ".Rmd")
   }
-  date <- paste0("\'`r format.Date(", "\"", date, "\"", ", ", "\"%B %d, %Y\"", ")`\'")
+  date <- sprintf(r"{"`r format.Date('%s', '%%B %%d, %%Y')`"}", date)
   metadata <- paste0(
     "---\n",
     "title: ", title, "\n",

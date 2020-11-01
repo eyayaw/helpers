@@ -1,6 +1,6 @@
 # summary of numeric (including factor class) columns of a data frame
 my_summ <- function(df) {
-  
+
   df_nonchar <- df[, !sapply(df, typeof) %in% "character"]
   summ <- data.frame(summary(df_nonchar), row.names = NULL)
 
@@ -36,7 +36,7 @@ my_summ <- function(df) {
   # when vars in the dataset contain NAs, we may have two additional columns in
   # summary call
   nas <- "NA's" %in% colnames(summ)
-  if (nas) {
+  if (any(nas)) {
     colnames(summ)[colnames(summ) == "NA's"] <- "missing"
   }
   summ
