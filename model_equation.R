@@ -1,5 +1,5 @@
 
-write_model <- 
+model_equation <- 
 function(dep.var, ind.vars, constant_term = "beta_0", error_term = "u") {
   n <- length(ind.vars)
   dep.var <- paste0(dep.var, "_i") # add observation index
