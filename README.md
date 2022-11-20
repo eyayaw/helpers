@@ -1,2 +1,2 @@
-# my_utils
-A collection of personal helper functions
+# Utils
+A collection of helper functions.
