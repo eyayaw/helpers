@@ -1,5 +1,5 @@
 # vapply ------------------------------------------------------------------
-
+## taken from rdatatable's utils.R: https://github.com/Rdatatable/data.table/blob/0a964d3ff9b7fa2dc5d5dc6ca2c4d7fe5bc8dcba/R/utils.R#L68
 # vapply for return value of character(1)
 vapply_chr <- function(.x, .f, ..., use.names = TRUE) {
   vapply(X = .x, FUN = .f, FUN.VALUE = NA_character_, ..., USE.NAMES = use.names)
