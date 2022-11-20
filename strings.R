@@ -1,55 +1,42 @@
-# strings -----------------------------------------------------------------
+# base-r equivalents of stringr::str_*  ---------------------------------------------
 
-  # if no match---NULL return NA
-  nomatch_na <- function(x) {
-    if (length(x) == 0L) NA else x
-  }
-
-  nomatch_na <- Vectorize(nomatch_na, SIMPLIFY = FALSE) # vectorize it over x
-
-
-#' `nomatch` takes either `NULL` or `NA`, following `base-r`'s and `stringr`'s return value for no match, respectively. In case of the former, we leave it *asis* because `base-r` returns `NULL` for no match.
-
-str_match <- function(string, pattern, nomatch = NULL, invert = FALSE, ...) {
-  .match <- regmatches(x = string,
-                       m = regexec(pattern, string, ...),
-                       invert = invert)
-  # check nomatch arg
-  nomatch <- eval(substitute(substitute(nm), list(nm = nomatch)))
-  if (!is.character(nomatch)) {
-    nomatch <- deparse1(nomatch)
-  }
-  choices <- c("NULL", "NA")
-  ii <- match(toupper(nomatch), choices)
-  if (is.na(ii))
-    stop("'nomatch' should be either “NULL” or “NA”.", call. = FALSE)
-  nomatch <- choices[ii]
-
-  if (nomatch == "NA")
-    .match <- nomatch_na(.match)
-  do.call("rbind", .match)
+# `nomatch` is represented by `NULL` and `NA`, in `base-r`'s and `stringr`'s, resp.
+if_no_match_return_na <- function(x) {
+  if (length(x) == 0L) NA else x
 }
 
-#' Motivation from R-devel
-#' [**Pattern Matching and Replacement**](https://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html)
+if_no_match_return_na = Vectorize(if_no_match_return_na)
 
-str_match_all <- function(string, pattern, invert = FALSE, ...) {
-  .match <- regmatches(x = string, m = gregexpr(pattern, string, ...))
-  .match <- lapply(.match,
-                 function(s) regmatches(s, regexec(pattern, s, ...), invert = invert))
-  lapply(.match, do.call, what = "rbind")
-  }
-
-
-str_extract <- function(string, pattern, ...) {
-  regmatches(string, regexpr(pattern, string, perl = TRUE, ...))
-}
-
-str_extract_all <- function(string, pattern, ...) {
-  regmatches(string, gregexpr(pattern, string, perl = TRUE, ...))
+## extract bracketed match -----
+str_match <- function(string, pattern, invert = F, ...) {
+  if_no_match_return_na(
+    regmatches(string, regexec(pattern, string, ...), invert = invert)
+  )
 }
 
 
+str_match_all <- function(string, pattern, invert = F, ...) {
+  if_no_match_return_na(
+    regmatches(string, gregexec(pattern, string, ...), invert = invert)
+  )
+}
+
+
+## extract match ----
+str_extract <- function(string, pattern, invert = F, ...) {
+  if_no_match_return_na(
+    regmatches(string, regexpr(pattern, string,...), invert = invert)
+  )
+}
+
+str_extract_all <- function(string, pattern, invert=F, ...) {
+  if_no_match_return_na(
+    regmatches(string, gregexpr(pattern, string, ...), invert = invert)
+  )
+}
+
+
+## replace matches in the string ----
 str_replace <- function(string, pattern, replacement, ...) {
   sub(pattern, replacement, string, ...)
 }
@@ -57,6 +44,8 @@ str_replace <- function(string, pattern, replacement, ...) {
 str_replace_all <- function(string, pattern, replacement, ...) {
   gsub(pattern, replacement, string, ...)
 }
+
+## remove matched from the string ----
 
 str_remove <- function(string, pattern, ...) {
   str_replace(string, pattern, "", ...)
@@ -66,12 +55,36 @@ str_remove_all <- function(string, pattern, ...) {
   str_replace_all(string, pattern, "", ...)
 }
 
+
+starts_with = function(string, pattern, ignore.case = F, ...) {
+  if (anyNA(string)) stop('`string` should not contain any NA', call. = F)
+  grepl(paste0("^", pattern), string, ignore.case = ignore.case, ...)
+}
+ends_with = function(string, pattern, ignore.case = F, ...) {
+  if (anyNA(string)) stop('`string` should not contain any NA', call. = F)
+  grepl(paste0(pattern, "$"), string, ignore.case = ignore.case, ...)
+}
+
+
+
+## pad a string with n width ----
+str_pad <- function(string, n) {
+  warning(any(n < nchar(string)), '`n` should be greater than `nchar(x)`', call. = F)
+  sprintf(paste0("%", n, "s"), string)
+}
+
+## remove white space anywhere in the string ----
+str_squish <- function(string) {
+  gsub("[ ]{2,}", " ", trimws(string, which = 'both'))
+}
+
+## subset a string ----
 str_sub <- function(string, start = 1L, end = nchar(string)) {
   str_sub_one <- function(x, s, e) {
     if (s < 0) s <- nchar(x) + s + 1
     if (e < 0) e <- nchar(x) + e + 1
     if (s > e) {
-      warning("`start` is greater than `end` for some string.", call. = FALSE)
+      warning("`start` is greater than `end` for some string.", call. = F)
     }
     substr(x, s, e)
   }
@@ -87,5 +100,5 @@ str_sub <- function(string, start = 1L, end = nchar(string)) {
   if (lt && lt < n) {
     string <- rep_len(string, length.out = n) # as in `substring()`
   }
-  mapply(str_sub_one, x = string, s = start, e = end, USE.NAMES = FALSE)
+  mapply(str_sub_one, x = string, s = start, e = end, USE.NAMES = F)
 }
