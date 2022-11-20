@@ -1,9 +1,8 @@
-rmd_boilerplate <- function(input,
-                            title = "Insert your title here",
-                            date = Sys.Date(),
-                            author = "Eyayaw Beze",
-                            output = "pdf_document",
-                            more_metadata = "geometry:\n  - left=3cm\n  - right=3cm\n  - top=3cm\n  - bottom=3cm", more_text="") {
+# generate an minimal rmarkdown boilerplate with some metadata
+
+rmd_boilerplate <- 
+function(input, title = "Insert your title here", date = Sys.Date(), author = "Eyayaw Beze",output = "pdf_document",
+         more_metadata = "geometry:\n  - left=3cm\n  - right=3cm\n  - top=3cm\n  - bottom=3cm", more_text="") {
 
   date <- sprintf(r"{"`r format.Date('%s', '%%B %%d, %%Y')`"}", date)
   metadata <- paste0(
@@ -34,8 +33,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
       writeLines(metadata, input)
       rstudioapi::navigateToFile(input)
     } else {
-      warning(sprintf("`%s` already exists.\nGive another filename.", input),
-              call. = FALSE)
+      warning(sprintf("`%s` already exists.\nGive another filename.", input), call. = FALSE)
     }
   } else {
     warning('The directory `', dir, "` does not seem to exist. File hasn't been written", call. = FALSE)
