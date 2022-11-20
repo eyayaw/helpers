@@ -16,10 +16,24 @@ near <- function (x, y, tol = .Machine$double.eps^0.5) {
   abs(x - y) < tol
 }
 
+
+# taken from https://github.com/tidyverse/modelr/blob/main/R/na-warn.R
+.na.warn <- function(object) {
+  missing <- sum(!stats::complete.cases(object))
+  if (missing > 0) {
+    warning("Dropping ", missing, " rows with missing values", call. = FALSE)
+  }
+  stats::na.exclude(object)
+}
+
+options(na.action = .na.warn)
+
+
 # a practical cut
 my_cut <- function(x, ..., include.lowest = TRUE, right = FALSE) {
   cut(x, ..., include.lowest = include.lowest, right = right)
 }
+
 
 # taken from adv-r 1st ed http://adv-r.had.co.nz/Functions.html#return-values
 in_dir <- function(dir, code) {
@@ -27,6 +41,8 @@ in_dir <- function(dir, code) {
   on.exit(setwd(old))
   force(code)
 }
+
+
 # Non-overwriting download operation
 download_file <- function(url, destfile, ...) {
   if (!file.exists(destfile)) {
@@ -59,9 +75,9 @@ make_names <- function(names) {
 colreorder <- function(x, col = NULL) {
   stopifnot(inherits(x, "data.frame"))
   cols = seq_len(ncol(x))
-  col = switch(class(col),
-               "character" = match(col, names(x)),
-               "numeric" = if (all(col %in% cols)) col else stop(call. = FALSE)
+  col = switch(
+    class(col), "character" = match(col, names(x)), 
+    "numeric" = if (all(col %in% cols)) col else stop(call. = FALSE)
   )
   x[, c(col, cols[-col])]
 }
