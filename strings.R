@@ -1,4 +1,5 @@
 # base-r equivalents of stringr::str_*  ---------------------------------------------
+## motivated by https://github.com/rstudio/learnr/blob/cb378b274f75568ea0649ce855a752a121d70d77/R/utils.R#L142
 
 # `nomatch` is represented by `NULL` and `NA`, in `base-r`'s and `stringr`'s, resp.
 if_no_match_return_na <- function(x) {
@@ -66,7 +67,6 @@ ends_with = function(string, pattern, ignore.case = F, ...) {
 }
 
 
-
 ## pad a string with n width ----
 str_pad <- function(string, n) {
   warning(any(n < nchar(string)), '`n` should be greater than `nchar(x)`', call. = F)
@@ -77,6 +77,7 @@ str_pad <- function(string, n) {
 str_squish <- function(string) {
   gsub("[ ]{2,}", " ", trimws(string, which = 'both'))
 }
+
 
 ## subset a string ----
 str_sub <- function(string, start = 1L, end = nchar(string)) {
