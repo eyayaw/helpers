@@ -61,6 +61,8 @@ starts_with = function(string, pattern, ignore.case = F, ...) {
   if (anyNA(string)) stop('`string` should not contain any NA', call. = F)
   grepl(paste0("^", pattern), string, ignore.case = ignore.case, ...)
 }
+
+
 ends_with = function(string, pattern, ignore.case = F, ...) {
   if (anyNA(string)) stop('`string` should not contain any NA', call. = F)
   grepl(paste0(pattern, "$"), string, ignore.case = ignore.case, ...)
@@ -72,6 +74,7 @@ str_pad <- function(string, n) {
   warning(any(n < nchar(string)), '`n` should be greater than `nchar(x)`', call. = F)
   sprintf(paste0("%", n, "s"), string)
 }
+
 
 ## remove white space anywhere in the string ----
 str_squish <- function(string) {
