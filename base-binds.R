@@ -25,13 +25,3 @@ pmap_dfr <- function(..., f) {
 pmap_dfc <- function(..., f) {
   as.data.frame(do.call(cbind, Map(f, ...)))
 }
-
-
-# reshaping -----------
-reshape_wide <- function(data, ...) {
-  reshape(data, ..., direction = 'wide')
-}
-
-reshape_long <- function(data, ...) {
-  reshape(data, ..., direction = 'long')
-}
