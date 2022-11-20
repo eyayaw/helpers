@@ -1,23 +1,21 @@
-
-# themes <- c("Solarized Dark", "textmate (default)", "Solarized Light", "Dracula")
-
-change_theme <- function(theme = NULL, favorite = FALSE) {
-  themes <- c(
-    "Solarized Dark",
-    "textmate (default)",
-    "Solarized Light",
-    "Dracula"
-  )
-
-  if (favorite && is.null(theme)) {
-    rstudioapi::applyTheme("Solarized Dark")
-  } else if (!favorite && is.null(theme)) {
-    if (as.integer(format(Sys.time(), "%H")) < 18) {
-      rstudioapi::applyTheme(sample(themes[-1], 1))
-    } else {
-      rstudioapi::applyTheme(themes[1])
-    }
-  } else if (!favorite && !is.null(theme)) {
+# change RStudio theme
+change_theme <- function(theme=NULL) {
+  themes = sapply(rstudioapi::getThemes(), `[[`, 'name')
+  darkThemes = themes[sapply(rstudioapi::getThemes(), `[[`, 'isDark')]
+  if (!is.null(theme)) {
+    stopifnot("Theme not found." = theme %in% themes)
     rstudioapi::applyTheme(theme)
+  } else if (is.null(theme)) {
+    # set a dark theme if the current time is after 6 PM
+    if (as.integer(format(Sys.time(), "%H")) >= 18L) {
+      thm = sample(darkThemes, 1L)
+      message(sprintf('Theme {%s} set.', thm))
+      rstudioapi::applyTheme(thm)
+    } else {
+      # set any random theme from available themes
+      thm = sample(themes, 1L)
+      message(sprintf('Theme {%s} set.', thm))
+      rstudioapi::applyTheme(thm)
+    }
   }
 }
