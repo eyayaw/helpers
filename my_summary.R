@@ -1,5 +1,5 @@
 # summary of numeric (including factor class) columns of a data frame
-my_summ <- function(df) {
+my_summary <- function(df) {
 
   df_nonchar <- df[, !sapply(df, typeof) %in% "character"]
   summ <- data.frame(summary(df_nonchar), row.names = NULL)
